@@ -7,7 +7,7 @@ import lizard
 import requests
 
 urls = (
-    '/worker','worker'
+    '/worker',"worker"
 )
 
 class workerapp(web.application):
@@ -19,7 +19,7 @@ class worker:
     def GET(self):
         print("hey")
         fileobject = web.input(id='',filename="")
-        repo = git.Repo("C:/Users/Jobin/Documents/GitHub/mlframework")
+        repo = git.Repo(fileobject.repoURL)
         filecontent = repo.git.show("%s:%s" % (fileobject.id, fileobject.filename))
         with open(fileobject.filename,"w") as tf:
             tf.write(file_content)
