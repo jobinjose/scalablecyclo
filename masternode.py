@@ -4,6 +4,8 @@ import git
 import sys
 import requests
 
+repoURL = "C:/Users/Jobin/Documents/GitHub/distributedFS"
+
 urls = (
     '/(.*)/', 'redirect'
     '/mainclass', 'mainclass'
@@ -23,7 +25,7 @@ class mainclass:
         workerip = web.input(hostid='',port='')
         jobdesc = fileincommit[workerid]
         workerid = workerid+1
-        url = "http://" + str(workerip.hostid) + ":"+ str(workerip.port)+":/worker?id="+str(jobdesc[0])+"&filename="+str(jobdesc[1])
+        url = "http://" + str(workerip.hostid) + ":"+ str(workerip.port)+":/worker?id="+str(jobdesc[0])+"&filename="+str(jobdesc[1])+str(work_details[1])+"&repoURL="+str(repoURL)
         requests.get(url)
         return "Work alloted..."
 
@@ -52,7 +54,7 @@ class finish:
         return "Result received..."
 
 if __name__ == "__main__":
-    repo = git.Repo("C:/Users/Jobin/Documents/GitHub/mlframework")
+    repo = git.Repo(repoURL)
     commitlist = list(repo.iter_commits('master'))
     i=1
     fileincommit = {}
