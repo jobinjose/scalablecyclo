@@ -4,6 +4,7 @@ import os
 import git
 import sys
 import lizard
+import requests
 
 urls = (
     '/worker','worker'
@@ -25,13 +26,19 @@ class worker:
         tf.close()
         i = lizard.analyze_file(fileobject.filename)
         os.remove(fileobject.filename)
-        print("hey")
-        return i.average_cyclomatic_complexity
+        print(i.average_cyclomatic_complexity)
+        url = "http://localhost:8080/finish?cc="+str(i.average_cyclomatic_complexity)
+        finish_reply = requests.post(url)
 
     def POST(self):
         return
 
 if __name__ == "__main__":
-    port = int(sys.argv[1])
+    host = sys.argv[1]
+    port = int(sys.argv[2])
     app = workerapp(urls, globals())
     app.run(port=port)
+    resp = requests.post("http://localhost:8080/register/")
+    if register.response == 'Worker active...':
+        url = "http://localhost:8080/master?hostid="+str(host)+"&port="+str(port)
+        requests.post(url)
