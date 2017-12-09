@@ -6,7 +6,7 @@ import sys
 
 urls = (
     '/(.*)/', 'redirect',
-    '/(.*)', 'mainclass'
+    '/mainclass', 'mainclass'
 )
 
 class masterapp(web.application):
@@ -25,14 +25,11 @@ class redirect:
         web.seeother('/' + path)
 
 if __name__ == "__main__":
-    repo = git.Repo("C:/Users/Jobin/Documents/GitHub/carousel")
-    commits_list = list(repo.iter_commits('master'))
-    i=1
-    for commit in commits_list:
-        for file_key in commit.stats.files.keys():
-            web.config.filelist_per_commit[i] = [commit.hexsha,file_key]
-            i=i+1
-    print(len(web.config.filelist_per_commit))
+    repo = git.Repo("C:/Users/Jobin/Documents/GitHub/mlframework")
+    commitlist = list(repo.iter_commits('master'))
+    fileincommit = {}
+    for commit in commitlist:
+        fileincommit[commit.hexsha] = list(commit.stats.files.keys())
 
     app = masterapp(urls, globals())
     app.run(port=8080)
