@@ -77,9 +77,9 @@ if __name__ == "__main__":
     web.config.update({"workernum":0, "fileincommit" : {},"workerid":1,"finish_count" : 0,"cc_total" : 0,"lock": threading.Lock()})
     for commit in commitlist:
         for filekey in commit.stats.files.keys():
-            if filekey
-            web.config.fileincommit[i] = [commit.hexsha,filekey]
-            i=i+1
+            if os.path.splitext(filekey)[1] not in [".txt",".md",".pdf",".csv",".pyc",""]:
+                web.config.fileincommit[i] = [commit.hexsha,filekey]
+                i=i+1
     print(len(web.config.fileincommit))
 
     app = masterapp(urls, globals())
