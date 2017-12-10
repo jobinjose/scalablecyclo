@@ -22,7 +22,7 @@ class workerappthread(threading.Thread):
 class worker:
     def GET(self):
         fileobject = web.input(id='',filename="")
-        repo = git.Repo("C:/Users/Jobin/Documents/GitHub/distributedFS")
+        repo = git.Repo(fileobject.repoURL)
         filecontent = repo.git.show("%s:%s" % (fileobject.id, fileobject.filename))
         print("fileobject.filename",fileobject.filename)
         temp = str(fileobject.filename)+str(fileobject.id)

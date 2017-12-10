@@ -7,6 +7,7 @@ import requests
 repoURL = "C:/Users/Jobin/Documents/GitHub/distributedFS"
 
 urls = (
+    '/(.*)/', "redirect",
     '/mainclass', "mainclass",
     '/register',"register",
     '/finish',"finish"
@@ -27,7 +28,7 @@ class mainclass:
             jobdesc = web.config.fileincommit[web.config.workerid]
             web.config.workerid = web.config.workerid+1
             web.config.lock.release()
-            url = "http://" + str(workerip.hostid) + ":"+ str(workerip.port)+":/worker?id="+str(jobdesc[0])+"&filename="+str(jobdesc[1])
+            url = "http://" + str(workerip.hostid) + ":"+ str(workerip.port)+"/worker?id="+str(jobdesc[0])+"&filename="+str(jobdesc[1])+"&repoURL="+str(repoURL)
             print(url)
             requests.get(url)
             return "Work alloted..."
