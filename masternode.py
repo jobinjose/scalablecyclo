@@ -7,10 +7,10 @@ import requests
 repoURL = "C:/Users/Jobin/Documents/GitHub/distributedFS"
 
 urls = (
-    '/(.*)/', 'redirect'
-    '/mainclass', 'mainclass'
-    '/register','register'
-    '/finish','finish'
+    '/(.*)/', "redirect",
+    '/mainclass', "mainclass",
+    '/register',"register",
+    '/finish',"finish"
 )
 
 class masterapp(web.application):
