@@ -23,8 +23,8 @@ class mainclass:
         return
     def POST(self):
         workerip = web.input(hostid='',port='')
+        web.config.lock.acquire()
         if web.config.workerid <= len(web.config.filelist_per_commit):
-            web.config.lock.acquire()
             jobdesc = web.config.fileincommit[web.config.workerid]
             web.config.workerid = web.config.workerid+1
             web.config.lock.release()
@@ -33,6 +33,7 @@ class mainclass:
             requests.get(url)
             return "Work alloted..."
         else:
+            web.config.lock.release()
             return "No work now..."
 
 class redirect:
@@ -59,7 +60,7 @@ class finish:
         print("len(web.config.fileincommit)",len(web.config.fileincommit))
         print("Recieved CC",cyclomatic_complexity.cc)
         print("web.config.finish_count",web.config.finish_count)
-        if web.config.finish_count >= len(web.config.fileincommit):
+        if web.config.finish_count == len(web.config.fileincommit):
             cc_average = web.config.cc_total/web.config.finish_count
             print("Average CC: ",cc_average)
         return "Result received..."
