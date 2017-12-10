@@ -25,11 +25,13 @@ class worker:
         fileobject = web.input(id='',filename="")
         repo = git.Repo(fileobject.repoURL)
         filecontent = repo.git.show("%s:%s" % (fileobject.id, fileobject.filename))
-        with open(fileobject.filename,"w") as tf:
-            tf.write(file_content)
+        print("fileobject.filename",fileobject.filename)
+        temp = str(fileobject.filename)+str(fileobject.id)
+        with open(temp,"w") as tf:
+            tf.write(filecontent)
         tf.close()
-        i = lizard.analyze_file(fileobject.filename)
-        os.remove(fileobject.filename)
+        i = lizard.analyze_file(temp)
+        os.remove(temp)
         print("Average CC",i.average_cyclomatic_complexity)
         url = "http://localhost:8080/finish?cc="+str(i.average_cyclomatic_complexity)
         finish_reply = requests.post(url)
