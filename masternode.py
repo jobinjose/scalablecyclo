@@ -1,7 +1,7 @@
 import web
 import os
 import git
-import sys
+import threading
 import requests
 
 repoURL = "C:/Users/Jobin/Documents/GitHub/distributedFS"
@@ -24,8 +24,10 @@ class mainclass:
     def POST(self):
         workerip = web.input(hostid='',port='')
         if web.config.workerid <= len(web.config.filelist_per_commit):
+            web.config.lock.acquire()
             jobdesc = web.config.fileincommit[web.config.workerid]
             web.config.workerid = web.config.workerid+1
+            web.config.lock.release()
             url = "http://" + str(workerip.hostid) + ":"+ str(workerip.port)+":/worker?id="+str(jobdesc[0])+"&filename="+str(jobdesc[1])+"&repoURL="+str(repoURL)
             print(url)
             requests.get(url)
@@ -50,12 +52,14 @@ class finish:
 
     def POST(self):
         cyclomatic_complexity = web.input(cc='')
+        web.config.lock.acquire()
         web.config.finish_count = web.config.finish_count+1
         web.config.cc_total = web.config.cc_total + float(cyclomatic_complexity.cc)
+        web.config.lock.release()
         print("len(web.config.fileincommit)",len(web.config.fileincommit))
         print("Recieved CC",cyclomatic_complexity.cc)
         print("web.config.finish_count",web.config.finish_count)
-        if web.config.finish_count == len(web.config.fileincommit):
+        if web.config.finish_count >= len(web.config.fileincommit):
             cc_average = web.config.cc_total/web.config.finish_count
             print("Average CC: ",cc_average)
         return "Result received..."
@@ -70,7 +74,7 @@ if __name__ == "__main__":
     workernum = 0
     workerid=1
     cc_total = 0
-    web.config.update({"workernum":0, "fileincommit" : {},"workerid":1,"finish_count" : 0,"cc_total" : 0})
+    web.config.update({"workernum":0, "fileincommit" : {},"workerid":1,"finish_count" : 0,"cc_total" : 0,"lock": threading.Lock()})
     for commit in commitlist:
         for filekey in commit.stats.files.keys():
             if filekey
