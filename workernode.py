@@ -1,5 +1,4 @@
 import web
-import shelve
 import os
 import git
 import sys
@@ -23,7 +22,7 @@ class workerappthread(threading.Thread):
 class worker:
     def GET(self):
         fileobject = web.input(id='',filename="")
-        repo = git.Repo(fileobject.repoURL)
+        repo = git.Repo("C:/Users/Jobin/Documents/GitHub/distributedFS")
         filecontent = repo.git.show("%s:%s" % (fileobject.id, fileobject.filename))
         print("fileobject.filename",fileobject.filename)
         temp = str(fileobject.filename)+str(fileobject.id)
@@ -44,10 +43,10 @@ if __name__ == "__main__":
     port = int(sys.argv[2])
     workerappthread().start()
     while True:
-        resp = requests.get("http://localhost:8080/register/")
+        resp = requests.get("http://localhost:8080/register")
         print(resp.text)
         if resp.text == 'Worker active...':
-            url = "http://localhost:8080/master?hostid="+str(host)+"&port="+str(port)
+            url = "http://localhost:8080/mainclass?hostid="+str(host)+"&port="+str(port)
             print(url)
             response = requests.post(url)
             if response.text == 'No work now...':
