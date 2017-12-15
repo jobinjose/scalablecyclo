@@ -3,6 +3,7 @@ import os
 import git
 import threading
 import requests
+import time
 
 repoURL = "C:/Users/Jobin/Documents/GitHub/distributedFS"
 
@@ -25,6 +26,8 @@ class mainclass:
         workerip = web.input(hostid='',port='')
         web.config.lock.acquire()
         if web.config.workerid <= len(web.config.fileincommit):
+            if web.config.workerid == 1:
+                web.config.time = time.time()
             jobdesc = web.config.fileincommit[web.config.workerid]
             web.config.workerid = web.config.workerid+1
             web.config.lock.release()
@@ -60,9 +63,11 @@ class finish:
         print("len(web.config.fileincommit)",len(web.config.fileincommit))
         print("Recieved CC",cyclomatic_complexity.cc)
         print("web.config.finish_count",web.config.finish_count)
-        if web.config.finish_count == len(web.config.fileincommit):
+        if web.config.finish_count == len(web.config.fileincommit)-5:
             cc_average = web.config.cc_total/web.config.finish_count
             print("Average CC: ",cc_average)
+            time1=time.time()-web.config.time
+            print("time interval: ",time1)
         return "Result received..."
 
 
@@ -75,7 +80,7 @@ if __name__ == "__main__":
     workernum = 0
     workerid=1
     cc_total = 0
-    web.config.update({"workernum":0, "fileincommit" : {},"workerid":1,"finish_count" : 0,"cc_total" : 0,"lock": threading.Lock()})
+    web.config.update({"workernum":0, "fileincommit" : {},"workerid":1,"finish_count" : 0,"cc_total" : 0,"lock": threading.Lock(),"time":0})
     for commit in commitlist:
         for filekey in commit.stats.files.keys():
             if os.path.splitext(filekey)[1] not in [".txt",".md",".pdf",".csv",".pyc",""]:
